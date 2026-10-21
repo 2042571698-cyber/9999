@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
+  --font-display: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
+}
+
+@layer base {
+  * {
+    border-color: #EFE8DF;
+  }
+  body {
+    font-family: var(--font-sans);
+    background-color: #FAF7F2;
+    color: #2D241E;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/* 暖阳治愈系高保真移动端卡片规范 - 统一现代轻圆角 12px */
+.card-warm {
+  background-color: #FFFFFF;
+  border-radius: 12px;
+  border: 1px solid #EFE8DF;
+  box-shadow: 0 4px 16px -2px rgba(220, 110, 40, 0.04), 0 2px 6px -1px rgba(100, 80, 60, 0.03);
+}
+
+.card-warm-elevated {
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFFDFB 100%);
+  border-radius: 12px;
+  border: 1px solid #ECE3D7;
+  box-shadow: 0 8px 24px -4px rgba(230, 120, 50, 0.07), 0 3px 8px -2px rgba(90, 70, 50, 0.03);
+}
+
+.card-warm-apricot {
+  background: linear-gradient(135deg, #FFF9F3 0%, #FFF4E8 100%);
+  border-radius: 12px;
+  border: 1px solid #FBE6D2;
+  box-shadow: 0 6px 20px -2px rgba(249, 115, 22, 0.06);
+}
+
+/* 暖阳胶囊按钮规范 */
+.btn-warm-orange {
+  background: linear-gradient(135deg, #FF8940 0%, #FF6422 100%);
+  color: #FFFFFF;
+  border-radius: 9999px;
+  font-weight: 600;
+  box-shadow: 0 4px 14px 0 rgba(255, 100, 34, 0.28);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-warm-orange:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 8px 0 rgba(255, 100, 34, 0.22);
+}
+
+.btn-warm-subtle {
+  background-color: #FFFFFF;
+  color: #5C4638;
+  border: 1px solid #EADBCE;
+  border-radius: 9999px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-warm-subtle:hover {
+  background-color: #FFFDF9;
+  border-color: #DFCFBF;
+}
+
+.btn-warm-subtle:active {
+  transform: scale(0.97);
+}
+
+/* 隐藏滚动条 */
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar,
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

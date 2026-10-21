@@ -1,0 +1,15 @@
+{
+  "name": "颐家 - 居家养老服务平台 (家属端)",
+  "description": "一站式居家养老监护与服务平台，为家属提供实时状态监控、健康管理、紧急救援、服务预约及亲情互动功能。",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "实时监测",
+    "健康档案",
+    "一键呼救",
+    "服务预约"
+  ]
+}
