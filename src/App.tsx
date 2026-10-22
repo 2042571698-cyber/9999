@@ -5,16 +5,15 @@ import {
   BriefcaseBusiness,
   CalendarDays,
   User,
-  ShieldCheck,
-  ChevronDown,
 } from 'lucide-react';
-import { SunLogo } from './components/SunLogo';
+
 import Overview from './components/Overview';
 import NotificationCenter from './components/NotificationCenter';
 import ServiceAssistance from './components/ServiceAssistance';
 import CarePlan from './components/CarePlan';
 import SettingsView from './components/SettingsView';
 import ElderSwitchDrawer from './components/ElderSwitchDrawer';
+import { ElderGatewayView } from './components/ElderGatewayView';
 import {
   TabType,
   ElderlyProfile,
@@ -32,6 +31,9 @@ import {
 } from './mockData';
 
 export default function App() {
+  // 开屏长辈选择器状态（默认开屏呈现，需先选择看哪个老人后才进入首页）
+  const [isGatewayOpen, setIsGatewayOpen] = useState(true);
+
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [elderlyList, setElderlyList] = useState<ElderlyProfile[]>(mockElderlyProfiles);
   const [currentElderly, setCurrentElderly] = useState<ElderlyProfile>(mockElderlyProfiles[0]);
@@ -139,178 +141,112 @@ export default function App() {
   const handleCreateNewServiceOrder = (newSrv: Partial<CareServiceItem>) => {
     const newOrder: CareServiceItem = {
       id: `srv-${Date.now()}`,
-      title: newSrv.title || '上门助浴',
-      category: newSrv.category || 'daily_assist',
+      title: newSrv.title || '预约服务',
+      category: newSrv.category || 'medical_care',
       elderlyName: currentElderly.name,
-      orderNumber: `NY${Date.now().toString().slice(-6)}`,
+      orderNumber: `FW2024${Math.floor(1000 + Math.random() * 9000)}`,
       applyTime: '刚刚',
-      currentStepIndex: 1, // 受理中
+      currentStepIndex: 0,
       price: newSrv.price || 120,
-      steps: newSrv.steps || [
+      steps: [
         {
           stepId: 'submitted',
-          stepName: '提交申请',
+          stepName: '提交',
           status: 'completed',
           timestamp: '刚刚',
           operatorName: '李明 (长子)',
-          description: '提交预约需求',
+          description: '提交预约申请',
         },
         {
           stepId: 'accepted',
-          stepName: '机构受理',
+          stepName: '受理',
           status: 'current',
-          timestamp: '处理中',
-          operatorName: '暖阳调度中心',
-          description: '正在匹配合适护工',
+          description: '等待社区养老服务调度中心接单',
         },
         {
           stepId: 'scheduled',
-          stepName: '人员安排',
+          stepName: '安排',
           status: 'pending',
-          description: '护工接单确认',
+          description: '派发专业护理员与陪诊员',
         },
         {
           stepId: 'executing',
-          stepName: '上门执行',
+          stepName: '执行',
           status: 'pending',
-          description: '上门服务并录入照护记录',
+          description: '上门服务与现场执行',
         },
         {
           stepId: 'completed',
-          stepName: '验收完成',
+          stepName: '完成',
           status: 'pending',
-          description: '家属在线签字验收',
+          description: '家属服务核销与评价',
         },
       ],
-      serviceStaff: {
-        name: '王金芳',
-        role: '专业金牌照护师',
-        avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
-        phone: '139-1122-8899',
-        rating: 4.95,
-        company: '暖阳安康养老服务',
-      },
-      supplementalInfo: [
-        { key: 'notes', label: '特殊健康禁忌或喜好', submitted: false },
-        { key: 'doorCode', label: '单元门禁密码', submitted: false },
-      ],
     };
-
     setServices([newOrder, ...services]);
-    setActiveTab('services');
   };
 
-  // 照护任务状态切换打卡
+  // 照护计划打卡
   const handleToggleTaskStatus = (taskId: string) => {
     setCareTasks((prev) =>
-      prev.map((t) => {
-        if (t.id === taskId) {
-          const nextCompleted = t.status !== 'completed';
+      prev.map((task) => {
+        if (task.id === taskId) {
+          const isDone = task.status === 'completed';
           return {
-            ...t,
-            status: nextCompleted ? 'completed' : 'pending',
-            completedAt: nextCompleted ? '刚刚' : undefined,
-            completedBy: nextCompleted ? '李明' : undefined,
+            ...task,
+            status: isDone ? 'pending' : 'completed',
+            completedAt: isDone ? undefined : '刚刚',
+            completedBy: isDone ? undefined : '李明 (长子)',
           };
         }
-        return t;
+        return task;
       })
     );
   };
 
-  // 添加照护任务
-  const handleAddTask = (task: Partial<CarePlanTask>) => {
+  // 添加新任务
+  const handleAddTask = (taskData: Partial<CarePlanTask>) => {
     const newTask: CarePlanTask = {
       id: `task-${Date.now()}`,
-      title: task.title || '新安排',
-      category: task.category || 'life',
-      scheduledTime: task.scheduledTime || '今日',
-      boundary: task.boundary || 'assistable',
-      assigneeName: task.assigneeName || '李明',
-      assigneeRole: '长子',
+      title: taskData.title || '新日常安排',
+      category: taskData.category || 'life',
+      scheduledTime: taskData.scheduledTime || '全天',
+      boundary: taskData.boundary || 'assistable',
+      assigneeName: '李明',
+      assigneeRole: '大儿子 李明',
       status: 'pending',
-      sharingBasis: '基于李建国签署的家庭全权共享协议',
-      notes: task.notes || '日常照料打卡',
+      sharingBasis: `基于${currentElderly.name}签署的家庭全权共享协议`,
+      notes: taskData.notes || '日常协同事项',
     };
     setCareTasks([...careTasks, newTask]);
   };
 
-  // 未处理紧急通知数
+  // 统计紧急未处理异常数
   const urgentCount = notifications.filter(
     (n) => n.category === 'urgent_attention' && !n.isAcknowledged
   ).length;
 
-  // 计算当前长辈实际综合状态（杜绝异常存在时显示今日正常）
+  // 计算当前长辈实际综合状态（统一暖色系，杜绝绿黄蓝）
   const elderStatusBadge = urgentCount > 0
     ? { text: `${urgentCount}项待关注`, isUrgent: true }
     : { text: currentElderly.statusSummary || '体征平稳', isUrgent: false };
 
+  // 开屏双长辈选择页面（优先呈现，用户选定后再进入主页）
+  if (isGatewayOpen) {
+    return (
+      <ElderGatewayView
+        elderlyList={elderlyList}
+        onSelectElder={(elder) => {
+          setCurrentElderly(elder);
+          setIsGatewayOpen(false);
+        }}
+      />
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-[#FAF8F5] text-[#2C211B] font-sans flex flex-col selection:bg-[#FFE3D1] selection:text-[#E65100]">
-      {/* 顶部通栏（扁平插画风，纯平无描边） */}
-      <header className="bg-white/95 backdrop-blur-md sticky top-0 z-40 px-4 py-3 shadow-xs">
-        <div className="max-w-md mx-auto flex items-center justify-between">
-          {/* 暖阳专属矢量 SVG Logo 与品牌标识 */}
-          <div className="flex items-center space-x-2.5">
-            <SunLogo className="w-8 h-8 shrink-0" size={32} />
-            <div>
-              <div className="flex items-center space-x-1.5 leading-tight">
-                <span className="font-bold text-base text-[#2A1E17] tracking-tight">暖阳</span>
-                <span className="text-[10px] font-bold text-[#E65100] bg-[#FFF2EB] px-2 py-0.5 rounded-lg">
-                  家属端
-                </span>
-              </div>
-              <p className="text-[10px] text-[#7C6D64] mt-0.5 leading-none">
-                居家养老服务平台
-              </p>
-            </div>
-          </div>
+    <div className="min-h-screen bg-[#FAF7F2] text-[#2A1E17] font-sans flex flex-col selection:bg-[#FFE3D1] selection:text-[#EA580C]">
 
-          {/* 顶部守护长辈切换入口（扁平插画风，纯色大块，无描边，防止挤压折行） */}
-          <button
-            onClick={() => setIsElderDrawerOpen(true)}
-            className="flex items-center space-x-1.5 bg-[#FAF8F5] hover:bg-[#F3EFE9] active:bg-[#ECE5DC] px-2.5 py-1.5 rounded-xl transition cursor-pointer group shrink-0"
-            title="点击切换守护长辈"
-          >
-            {/* 头像 */}
-            <div className="relative shrink-0">
-              <div className="w-6 h-6 rounded-full bg-[#EFE9E2] text-[#4A3B32] flex items-center justify-center font-bold text-xs">
-                {currentElderly.avatarText}
-              </div>
-              <span
-                className={`absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full ring-1 ring-white ${
-                  elderStatusBadge.isUrgent ? 'bg-red-500' : 'bg-emerald-500'
-                }`}
-              />
-            </div>
-
-            {/* 名字与亲属关系 */}
-            <div className="flex items-center space-x-1 text-left whitespace-nowrap shrink-0">
-              <span className="text-xs font-bold text-[#2A1E17] group-hover:text-[#E65100] transition">
-                {currentElderly.name}
-              </span>
-              <span className="text-[10px] text-[#78695E] bg-[#EFE8DF] px-1.5 py-0.5 rounded-md font-medium">
-                {currentElderly.relationship}
-              </span>
-            </div>
-
-            {/* 真实状态标签（无描边纯色块） */}
-            <span
-              className={`text-[10px] font-bold px-2 py-0.5 rounded-md whitespace-nowrap shrink-0 ${
-                elderStatusBadge.isUrgent
-                  ? 'text-[#DC2626] bg-[#FEE2E2]'
-                  : 'text-[#059669] bg-[#ECFDF5]'
-              }`}
-            >
-              {elderStatusBadge.text}
-            </span>
-
-            {/* 下拉微三角 */}
-            <ChevronDown className="w-3.5 h-3.5 text-[#8C7D73] group-hover:text-[#2A1E17] transition-colors shrink-0" />
-          </button>
-
-        </div>
-      </header>
 
       {/* 主视图内容区域 */}
       <main className="flex-1">
@@ -320,6 +256,7 @@ export default function App() {
             currentElderly={currentElderly}
             onSelectElderly={(e) => setCurrentElderly(e)}
             onOpenElderDrawer={() => setIsElderDrawerOpen(true)}
+            onOpenGateway={() => setIsGatewayOpen(true)}
             metrics={metrics}
             notifications={notifications}
             services={services}
@@ -364,7 +301,7 @@ export default function App() {
         )}
       </main>
 
-      {/* 底部 5 栏导航栏（扁平插画风，无描边，纯色平底） */}
+      {/* 底部 5 栏导航栏（纯暖色排版，无描边） */}
       <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md z-50 py-2 shadow-lg">
         <div className="max-w-md mx-auto grid grid-cols-5 px-2">
           {[
@@ -386,7 +323,7 @@ export default function App() {
                 <div className="relative">
                   <TabIcon
                     className={`w-5 h-5 transition-colors ${
-                      isActive ? 'text-[#FF793F] stroke-[2.2]' : 'text-[#7C6E65] stroke-[1.75]'
+                      isActive ? 'text-[#FF793F] stroke-[2.2]' : 'text-[#8C7D73] stroke-[1.75]'
                     }`}
                   />
 
@@ -399,7 +336,7 @@ export default function App() {
 
                 <span
                   className={`text-[10px] mt-1 tracking-tight ${
-                    isActive ? 'font-bold text-[#FF793F]' : 'font-medium text-[#6B5D54]'
+                    isActive ? 'font-bold text-[#FF793F]' : 'font-medium text-[#7C6E65]'
                   }`}
                 >
                   {tab.label}
@@ -418,6 +355,7 @@ export default function App() {
         currentElderly={currentElderly}
         onSelectElderly={(elderly) => setCurrentElderly(elderly)}
         onAddElderly={handleAddElderly}
+        onOpenGateway={() => setIsGatewayOpen(true)}
       />
     </div>
   );

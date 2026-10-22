@@ -21,6 +21,7 @@ interface ElderSwitchDrawerProps {
   currentElderly: ElderlyProfile;
   onSelectElderly: (elderly: ElderlyProfile) => void;
   onAddElderly?: (newProfile: Partial<ElderlyProfile>) => void;
+  onOpenGateway?: () => void;
 }
 
 export default function ElderSwitchDrawer({
@@ -30,6 +31,7 @@ export default function ElderSwitchDrawer({
   currentElderly,
   onSelectElderly,
   onAddElderly,
+  onOpenGateway,
 }: ElderSwitchDrawerProps) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newName, setNewName] = useState('');
@@ -105,13 +107,33 @@ export default function ElderSwitchDrawer({
           </button>
         </div>
 
-        {/* 提示消息 */}
+        {/* 提示消息（统一暖色系） */}
         {callNotice && (
-          <div className="mx-4 mt-2 px-3 py-2 bg-[#18794E] text-white text-xs font-semibold rounded-lg flex items-center space-x-2 shadow-xs animate-in fade-in">
+          <div className="mx-4 mt-2 px-3 py-2 bg-[#EA580C] text-white text-xs font-semibold rounded-xl flex items-center space-x-2 shadow-xs animate-in fade-in">
             <Phone className="w-3.5 h-3.5 animate-bounce shrink-0" />
             <span className="truncate">{callNotice}</span>
           </div>
         )}
+
+        {/* 快捷返回开屏双老总览入口 */}
+        <div className="px-4 pt-2">
+          <button
+            onClick={() => {
+              onClose();
+              if (onOpenGateway) {
+                onOpenGateway();
+              }
+            }}
+            className="w-full py-2.5 px-3 rounded-xl bg-[#FAF5EF] hover:bg-[#F3EBE0] text-[#2A1E17] text-xs font-bold flex items-center justify-between transition cursor-pointer"
+          >
+            <span className="flex items-center space-x-2">
+              <span className="w-2 h-2 rounded-full bg-[#FF793F]" />
+              <span>开屏长辈一屏总览 (查看双老状态与待办)</span>
+            </span>
+            <span className="text-[#EA580C]">进入 &rarr;</span>
+          </button>
+        </div>
+
 
         {/* 抽屉滚动内容 */}
         <div className="p-4 space-y-3 overflow-y-auto max-h-[calc(88vh-130px)]">
@@ -143,7 +165,7 @@ export default function ElderSwitchDrawer({
                       </div>
                       <span
                         className={`absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full ring-2 ring-white flex items-center justify-center ${
-                          isAttention ? 'bg-amber-500' : 'bg-emerald-500'
+                          isAttention ? 'bg-[#DC2626]' : 'bg-[#EA580C]'
                         }`}
                       >
                         <span className="w-1.5 h-1.5 rounded-full bg-white" />
@@ -164,8 +186,8 @@ export default function ElderSwitchDrawer({
                         <span
                           className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
                             isAttention
-                              ? 'bg-[#FEF3C7] text-[#D97706]'
-                              : 'bg-[#ECFDF5] text-[#059669]'
+                              ? 'bg-[#FEECEB] text-[#B91C1C]'
+                              : 'bg-[#F5EFE9] text-[#5A483D]'
                           }`}
                         >
                           {elderly.statusSummary}
@@ -193,18 +215,19 @@ export default function ElderSwitchDrawer({
                 <div className="mt-3 pt-2.5 flex items-center justify-between text-xs">
                   <div className="flex items-center space-x-3 text-[#5A493E]">
                     <span className="flex items-center font-medium">
-                      <Activity className="w-3.5 h-3.5 mr-1 text-[#FF7528]" />
+                      <Activity className="w-3.5 h-3.5 mr-1 text-[#EA580C]" />
                       心率 72
                     </span>
                     <span className="flex items-center font-medium">
-                      <Heart className="w-3.5 h-3.5 mr-1 text-rose-500" />
+                      <Heart className="w-3.5 h-3.5 mr-1 text-[#EA580C]" />
                       血压 126/82
                     </span>
                     <span className="flex items-center font-medium">
-                      <Footprints className="w-3.5 h-3.5 mr-1 text-emerald-600" />
+                      <Footprints className="w-3.5 h-3.5 mr-1 text-[#8C7D73]" />
                       4,320步
                     </span>
                   </div>
+
 
                   {/* 紧急联系呼叫长辈按钮 */}
                   <button

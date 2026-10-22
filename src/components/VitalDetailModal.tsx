@@ -294,7 +294,7 @@ export function VitalDetailModal({
             <div className="min-w-0 text-left">
               <div className="flex items-center space-x-2">
                 <h3 className="text-base font-bold text-[#2A1E17] truncate">{meta.title} · 深度监测</h3>
-                <span className="text-[11px] font-semibold text-[#15803D] bg-[#EBF8F1] px-2.5 py-0.5 rounded-full shrink-0 whitespace-nowrap">
+                <span className="text-[11px] font-semibold text-[#5A483D] bg-[#F5EFE9] px-2.5 py-0.5 rounded-full shrink-0 whitespace-nowrap">
                   平稳达标
                 </span>
               </div>
@@ -334,10 +334,10 @@ export function VitalDetailModal({
 
         {/* 滚动内容区域 */}
         <div className="p-4 overflow-y-auto space-y-3 flex-1 text-left">
-          {/* 实时核验提示横幅 */}
+          {/* 实时核验提示横幅（统一暖色系） */}
           {transferSuccessTip && (
-            <div className="bg-[#ECFDF5] p-3 rounded-2xl flex items-center space-x-2 text-xs text-[#065F46] animate-in fade-in">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <div className="bg-[#FFF2EB] p-3 rounded-2xl flex items-center space-x-2 text-xs text-[#C2410C] animate-in fade-in">
+              <CheckCircle2 className="w-4 h-4 text-[#EA580C] shrink-0" />
               <span>已将长辈今日「{meta.title}」数据直接派发至亚运村社区全科医生站，医生将优先复核！</span>
             </div>
           )}
@@ -414,7 +414,7 @@ export function VitalDetailModal({
             </div>
             <div className="bg-white rounded-xl p-2.5 text-center">
               <span className="text-[10px] text-[#8C7D73] block">最低记录</span>
-              <span className="text-xs sm:text-sm font-bold text-[#15803D] mt-0.5 block truncate">
+              <span className="text-xs sm:text-sm font-bold text-[#5A483D] mt-0.5 block truncate">
                 {meta.minVal.split(' ')[0]}
               </span>
             </div>
@@ -495,7 +495,7 @@ export function VitalDetailModal({
 
             <p className="text-[11px] text-[#7A6A60] bg-[#FAF8F5] p-2.5 rounded-xl flex items-center justify-between">
               <span>{meta.summaryText}</span>
-              <span className="font-semibold text-[#15803D] shrink-0 whitespace-nowrap ml-2">平稳正常</span>
+              <span className="font-semibold text-[#5A483D] bg-[#F5EFE9] px-2 py-0.5 rounded shrink-0 whitespace-nowrap ml-2">平稳正常</span>
             </p>
           </div>
 
@@ -530,7 +530,7 @@ export function VitalDetailModal({
                     </div>
                     <span className="text-[10px] text-[#9E8F84] mt-0.5 block">{rec.time}</span>
                   </div>
-                  <span className="text-[10px] font-semibold text-[#15803D] bg-[#F0FDF4] px-2 py-0.5 rounded">
+                  <span className="text-[10px] font-semibold text-[#5A483D] bg-[#F5EFE9] px-2 py-0.5 rounded">
                     {rec.status}
                   </span>
                 </div>
@@ -544,10 +544,11 @@ export function VitalDetailModal({
               <div className="w-4 h-4 rounded-full bg-[#FF793F] text-white flex items-center justify-center text-[10px] font-bold">
                 医
               </div>
-              <h4 className="text-xs font-bold text-[#B45309]">社区医生与照护建议</h4>
+              <h4 className="text-xs font-bold text-[#C2410C]">社区医生与照护建议</h4>
             </div>
             <p className="text-xs text-[#7A6A60] leading-relaxed">{meta.advice}</p>
           </div>
+
         </div>
 
         {/* 底部操作工具栏（扁平纯色块，高可用） */}
@@ -683,7 +684,7 @@ export function VitalDetailModal({
               </div>
               <div className="flex justify-between">
                 <span className="text-[#7A6A60]">达标合格率：</span>
-                <span className="font-bold text-[#15803D]">{meta.complianceRate}</span>
+                <span className="font-bold text-[#EA580C]">{meta.complianceRate}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-[#7A6A60]">综合评定：</span>

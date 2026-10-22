@@ -425,7 +425,7 @@ export default function ServiceAssistance({
       {/* 消息 Toast */}
       {toastMessage && (
         <div className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-[#2E2018] text-white text-xs font-medium px-4 py-2 rounded-full shadow-xl z-50 flex items-center space-x-1.5 animate-fade-in">
-          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+          <CheckCircle2 className="w-3.5 h-3.5 text-[#FF793F]" />
           <span>{toastMessage}</span>
         </div>
       )}
